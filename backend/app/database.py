@@ -1,6 +1,9 @@
 import time
 from typing import List, Dict, Any, Optional
-from app.catalog_data import INITIAL_CATALOG, generate_category_clustered_vector
+try:
+    from app.catalog_data import INITIAL_CATALOG, generate_category_clustered_vector
+except ModuleNotFoundError:
+    from catalog_data import INITIAL_CATALOG, generate_category_clustered_vector
 
 class DatabaseStore:
     def __init__(self):

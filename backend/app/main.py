@@ -5,12 +5,20 @@ from fastapi import FastAPI, File, UploadFile, Form, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from app.models import (
-    Product, VisualSearchResponse, MatchResult, SimilarityBreakdown,
-    CartRequest, WishlistRequest, OrderRequest, ProductCreate
-)
-from app.database import db_instance
-from app.ai_engine import ai_engine_instance, HAS_OPENCV, HAS_TORCH, HAS_FAISS
+try:
+    from app.models import (
+        Product, VisualSearchResponse, MatchResult, SimilarityBreakdown,
+        CartRequest, WishlistRequest, OrderRequest, ProductCreate
+    )
+    from app.database import db_instance
+    from app.ai_engine import ai_engine_instance, HAS_OPENCV, HAS_TORCH, HAS_FAISS
+except ModuleNotFoundError:
+    from models import (
+        Product, VisualSearchResponse, MatchResult, SimilarityBreakdown,
+        CartRequest, WishlistRequest, OrderRequest, ProductCreate
+    )
+    from database import db_instance
+    from ai_engine import ai_engine_instance, HAS_OPENCV, HAS_TORCH, HAS_FAISS
 
 app = FastAPI(
     title="Intelligent Visual Product Search API",
