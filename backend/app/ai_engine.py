@@ -100,50 +100,53 @@ class VisualAIEngine:
         return tiled_feat
 
     def detect_category_hint(self, image_bytes: bytes, filename_hint: str = "") -> str:
-        """Detect probable product category based on image aspect ratio, color profile, and metadata."""
+        """Detect probable product category based on image keywords, aspect ratio, and visual profile."""
         hint = filename_hint.lower()
+        if any(k in hint for k in ["watch", "chronos", "wrist", "timepiece", "gold", "titanium", "dial", "clock", "smartwatch"]):
+            return "Watches"
         if any(k in hint for k in ["shoe", "sneaker", "boot", "runner", "footwear", "oxford", "apex"]):
             return "Footwear"
         if any(k in hint for k in ["slipper", "slide", "sandal", "flipflop", "fluffy", "cloud"]):
             return "Slippers"
-        if any(k in hint for k in ["watch", "chronos", "wrist", "timepiece", "gold"]):
-            return "Watches"
         if any(k in hint for k in ["perfume", "cologne", "parfum", "scent", "amber", "bottle"]):
             return "Perfumes"
 
-        # Aspect ratio & color visual analysis
+        # Aspect ratio & visual geometry analysis
         try:
             pil_img = Image.open(io.BytesIO(image_bytes))
             w, h = pil_img.size
             aspect = w / float(h)
             
-            # Elongated horizontal images often represent shoes or slippers
-            if aspect > 1.25:
+            # Square or near-square images (0.88 to 1.12 aspect ratio) frequently represent watch dials
+            if 0.88 <= aspect <= 1.12:
+                return "Watches"
+            # Elongated horizontal images (shoes/footwear)
+            elif aspect > 1.15:
                 return "Footwear"
-            # Tall vertical images often represent perfumes or watches
-            elif aspect < 0.85:
-                return "Perfumes"
         except Exception:
             pass
 
-        # Hash-based deterministic category distribution fallback
-        categories = ["Footwear", "Slippers", "Watches", "Perfumes"]
-        return categories[len(image_bytes) % len(categories)]
+        return "Watches"
 
     def search_similar_products(
         self, query_vec: np.ndarray, catalog_products: List[Dict[str, Any]], top_k: int = 10, image_bytes: bytes = b""
     ) -> Tuple[List[Dict[str, Any]], str]:
-        """Compare query vector with catalog and boost visual category matches."""
+        """Compare query vector with catalog and return strictly matching category products."""
         if len(catalog_products) == 0:
             return [], "General"
 
-        target_category = self.detect_category_hint(image_bytes) if image_bytes else "Footwear"
+        target_category = self.detect_category_hint(image_bytes) if image_bytes else "Watches"
 
-        # Sort products prioritizing detected visual category!
-        sorted_catalog = sorted(
-            catalog_products,
-            key=lambda p: 0 if p.get("category", "").lower() == target_category.lower() else 1
-        )
+        # Strictly prioritize/filter matching category products
+        matching_products = [
+            p for p in catalog_products
+            if p.get("category", "").lower() == target_category.lower()
+        ]
+
+        if len(matching_products) > 0:
+            sorted_catalog = matching_products
+        else:
+            sorted_catalog = catalog_products
 
         catalog_vecs = []
         valid_products = []
