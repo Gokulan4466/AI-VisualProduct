@@ -22,7 +22,7 @@ export const SearchResultsPage: React.FC = () => {
 
   // Filters & Sorting
   const [selectedCategory, setSelectedCategory] = useState<string>(
-    searchDataState?.detectedCategory || searchParams.get('category') || 'Watches'
+    searchDataState?.detectedCategory || searchParams.get('category') || 'All'
   );
   const [selectedBrand, setSelectedBrand] = useState<string>('All');
   const [selectedColor, setSelectedColor] = useState<string>('All');
@@ -84,7 +84,7 @@ export const SearchResultsPage: React.FC = () => {
     return 0;
   });
 
-  const categories = ['All', 'Footwear', 'Watches', 'Perfumes', 'Slippers', 'Electronics', 'Eyewear'];
+  const categories = ['All', 'Footwear', 'Perfumes', 'Eyewear'];
   const brands = ['All', 'AeroStride', 'SonicTech', 'Vanguard Wristwear', 'VogueCraft', 'Nordic Haven', 'PulseWear', 'OpticLux'];
   const colors = ['All', 'Red', 'Black', 'White', 'Brown', 'Yellow', 'Titanium', 'Gold'];
 
