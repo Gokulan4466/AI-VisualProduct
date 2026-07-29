@@ -14,12 +14,11 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(() => {
-    const saved = localStorage.getItem('user');
-    return saved ? JSON.parse(saved) : {
-      id: 'usr-demo',
-      name: 'Alex Vance',
-      email: 'alex.vance@ai-vision.io',
-      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'
+    return {
+      id: 'usr-virtual-ai',
+      name: 'Virtual-AI',
+      email: 'virtual-ai@visionsearch.io',
+      avatar: ''
     };
   });
 
@@ -34,9 +33,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = (email: string, name?: string) => {
     const newUser: User = {
       id: `usr-${Date.now()}`,
-      name: name || email.split('@')[0],
+      name: name || 'Virtual-AI',
       email,
-      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'
+      avatar: ''
     };
     setUser(newUser);
   };
@@ -44,9 +43,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const googleLogin = () => {
     const googleUser: User = {
       id: 'usr-google-88',
-      name: 'Alex Vance (Google)',
-      email: 'alex.vance@gmail.com',
-      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'
+      name: 'Virtual-AI',
+      email: 'virtual-ai@gmail.com',
+      avatar: ''
     };
     setUser(googleUser);
   };

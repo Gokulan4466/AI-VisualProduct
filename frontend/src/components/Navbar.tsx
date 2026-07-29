@@ -138,23 +138,21 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenVoiceSearch }) => {
             <div className="relative">
               <button
                 onClick={() => setShowUserMenu(!showUserMenu)}
-                className="flex items-center gap-2 p-1.5 rounded-full hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-colors border border-slate-200 dark:border-slate-800"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-full hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-colors border border-slate-200 dark:border-slate-800 bg-slate-100/50 dark:bg-slate-900/50"
               >
-                <img
-                  src={user?.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80"}
-                  alt={user?.name}
-                  className="w-8 h-8 rounded-full object-cover ring-2 ring-primary-500/50"
-                />
-                <span className="hidden sm:inline-block text-xs font-bold text-slate-700 dark:text-slate-200 pr-1">
-                  {user?.name.split(' ')[0]}
+                <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-primary-600 to-accent-500 text-white flex items-center justify-center font-extrabold text-xs shadow-sm">
+                  <UserIcon className="w-3.5 h-3.5" />
+                </div>
+                <span className="text-xs font-extrabold text-slate-800 dark:text-slate-200">
+                  {user?.name || "Virtual-AI"}
                 </span>
               </button>
 
               {showUserMenu && (
                 <div className="absolute right-0 mt-3 w-56 glass-card rounded-2xl shadow-2xl p-2 border border-slate-200 dark:border-slate-800 py-2 z-50">
                   <div className="px-3 py-2 border-b border-slate-200/60 dark:border-slate-800 mb-1">
-                    <p className="text-sm font-bold text-slate-900 dark:text-white">{user?.name}</p>
-                    <p className="text-xs text-slate-400 truncate">{user?.email}</p>
+                    <p className="text-sm font-bold text-slate-900 dark:text-white">{user?.name || "Virtual-AI"}</p>
+                    <p className="text-xs text-slate-400 truncate">{user?.email || "virtual-ai@visionsearch.io"}</p>
                   </div>
                   <button
                     onClick={() => {
