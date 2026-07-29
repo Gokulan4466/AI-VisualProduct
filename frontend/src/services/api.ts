@@ -1048,19 +1048,32 @@ function generateFallbackSearchResponse(imageInput: File | string): VisualSearch
   nameOrStr = nameOrStr.toLowerCase();
 
   let targetCategory = '';
-  if (nameOrStr.includes('shoe') || nameOrStr.includes('sneaker') || nameOrStr.includes('boot') || nameOrStr.includes('runner') || nameOrStr.includes('footwear') || nameOrStr.includes('apex')) {
-    targetCategory = 'Footwear';
-  } else if (nameOrStr.includes('slipper') || nameOrStr.includes('slide') || nameOrStr.includes('sandal') || nameOrStr.includes('flipflop') || nameOrStr.includes('cloud')) {
-    targetCategory = 'Slippers';
-  } else if (nameOrStr.includes('watch') || nameOrStr.includes('chronos') || nameOrStr.includes('clock') || nameOrStr.includes('wrist') || nameOrStr.includes('titanium')) {
-    targetCategory = 'Watches';
-  } else if (nameOrStr.includes('perfume') || nameOrStr.includes('cologne') || nameOrStr.includes('fragrance') || nameOrStr.includes('scent') || nameOrStr.includes('bottle') || nameOrStr.includes('amber')) {
+  if (
+    nameOrStr.includes('perfume') || nameOrStr.includes('cologne') || 
+    nameOrStr.includes('fragrance') || nameOrStr.includes('scent') || 
+    nameOrStr.includes('bottle') || nameOrStr.includes('amber') || nameOrStr.includes('parfum') ||
+    queryUrl.includes('1594035910387') || queryUrl.includes('1523293182086') ||
+    queryUrl.includes('1541643600914') || queryUrl.includes('1592945403244') ||
+    queryUrl.includes('1588405748880') || queryUrl.includes('1615397349754')
+  ) {
     targetCategory = 'Perfumes';
+  } else if (
+    nameOrStr.includes('watch') || nameOrStr.includes('chronos') || 
+    nameOrStr.includes('clock') || nameOrStr.includes('wrist') || 
+    nameOrStr.includes('titanium') || queryUrl.includes('1523275335684') ||
+    queryUrl.includes('1579586337278') || queryUrl.includes('1547996160')
+  ) {
+    targetCategory = 'Watches';
+  } else if (
+    nameOrStr.includes('shoe') || nameOrStr.includes('sneaker') || 
+    nameOrStr.includes('boot') || nameOrStr.includes('runner') || 
+    nameOrStr.includes('footwear') || nameOrStr.includes('apex')
+  ) {
+    targetCategory = 'Footwear';
+  } else if (nameOrStr.includes('slipper') || nameOrStr.includes('slide') || nameOrStr.includes('sandal') || nameOrStr.includes('cloud')) {
+    targetCategory = 'Slippers';
   } else {
-    const categories = ['Footwear', 'Watches', 'Perfumes', 'Slippers'];
-    let hash = 0;
-    for (let i = 0; i < queryUrl.length; i++) hash += queryUrl.charCodeAt(i);
-    targetCategory = categories[Math.abs(hash) % categories.length];
+    targetCategory = 'Perfumes';
   }
 
   const matchingCategoryProducts = MOCK_PRODUCTS.filter(
