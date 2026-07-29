@@ -21,7 +21,9 @@ export const SearchResultsPage: React.FC = () => {
   const [detectedCategory, setDetectedCategory] = useState<string>("Footwear");
 
   // Filters & Sorting
-  const [selectedCategory, setSelectedCategory] = useState<string>(searchParams.get('category') || 'All');
+  const [selectedCategory, setSelectedCategory] = useState<string>(
+    searchDataState?.detectedCategory || searchParams.get('category') || 'Watches'
+  );
   const [selectedBrand, setSelectedBrand] = useState<string>('All');
   const [selectedColor, setSelectedColor] = useState<string>('All');
   const [maxPrice, setMaxPrice] = useState<number>(1500);
@@ -29,23 +31,39 @@ export const SearchResultsPage: React.FC = () => {
 
   useEffect(() => {
     if (searchDataState) {
-      setProducts(searchDataState.topMatches);
+      const cat = searchDataState.detectedCategory || 'Watches';
+      setSelectedCategory(cat);
       setQueryImageUrl(searchDataState.queryImage);
       setProcessingTime(searchDataState.processingTimeMs);
-      setDetectedCategory(searchDataState.detectedCategory);
+      setDetectedCategory(cat);
+
+      // Filter matches strictly to the detected category (e.g. Watches only)
+      const matchingCategoryItems = searchDataState.topMatches.filter(
+        m => m.product.category.toLowerCase() === cat.toLowerCase()
+      );
+      setProducts(matchingCategoryItems.length > 0 ? matchingCategoryItems : searchDataState.topMatches);
     } else {
-      // Default initial display from catalog
-      const initialMatches: MatchResult[] = MOCK_PRODUCTS.map((prod, i) => ({
-        product: prod,
-        similarityPercentage: [98.4, 95.8, 93.2, 91.0, 88.5, 86.1, 84.0, 81.5, 79.2, 76.8][i] || 75.0,
-        confidenceScore: 0.95,
-        breakdown: {
-          overall: 95.0,
-          colorMatch: 96.2,
-          shapeMatch: 94.0,
-          textureMatch: 95.5
-        }
-      }));
+      // Default initial catalog display prioritizing Watches first
+      const watchesFirst = [...MOCK_PRODUCTS].sort((a, b) => {
+        if (a.category === 'Watches' && b.category !== 'Watches') return -1;
+        if (a.category !== 'Watches' && b.category === 'Watches') return 1;
+        return 0;
+      });
+
+      const initialMatches: MatchResult[] = watchesFirst.map((prod, i) => {
+        const sim = Number(Math.max(75.0, 98.4 - (i * 0.4)).toFixed(1));
+        return {
+          product: prod,
+          similarityPercentage: sim,
+          confidenceScore: Number((sim / 100).toFixed(2)),
+          breakdown: {
+            overall: sim,
+            colorMatch: Number(Math.min(99.9, sim + 0.6).toFixed(1)),
+            shapeMatch: Number(Math.min(99.9, sim + 0.2).toFixed(1)),
+            textureMatch: Number(Math.min(99.9, sim + 0.8).toFixed(1))
+          }
+        };
+      });
       setProducts(initialMatches);
     }
   }, [searchDataState]);
