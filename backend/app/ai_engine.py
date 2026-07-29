@@ -102,6 +102,8 @@ class VisualAIEngine:
     def detect_category_hint(self, image_bytes: bytes, filename_hint: str = "") -> str:
         """Detect product category accurately based on keywords, visual aspect ratio, and color distribution."""
         hint = filename_hint.lower()
+        if any(k in hint for k in ["eyewear", "glasses", "sunglasses", "spectacles", "frames", "aviator", "wayfarer", "opticlux", "lens", "1572635196237", "1511499767150", "1577803645773", "1508296695146"]):
+            return "Eyewear"
         if any(k in hint for k in ["perfume", "cologne", "parfum", "scent", "amber", "bottle", "fragrance", "eau", "flacon", "spray", "1594035910387", "1523293182086", "1541643600914", "1592945403244"]):
             return "Perfumes"
         if any(k in hint for k in ["watch", "chronos", "wrist", "timepiece", "titanium", "smartwatch", "rolex", "omega", "seiko"]):
